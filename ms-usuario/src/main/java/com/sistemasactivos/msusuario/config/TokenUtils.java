@@ -5,11 +5,10 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class TokenUtils {
@@ -19,11 +18,12 @@ public class TokenUtils {
     /**
      * Crea un token de acceso con los datos proporcionados.
      *
-     * @param name  El nombre del usuario.
-     * @param email El correo electrónico del usuario.
+     * @param name        El nombre del usuario.
+     * @param email       El correo electrónico del usuario.
+     * @param authorities Los roles y permisos del usuario.
      * @return El token de acceso generado.
      */
-    public static String createToken(String name, String email) {
+    public static String createToken(String name, String email, Collection<? extends GrantedAuthority> authorities) {
         // Calcula la fecha de expiración sumando el tiempo de expiración al tiempo actual
         long expirationTime = ACCES_TOCKEN_LIFE * 1000;
         Date expirationDate = new Date(System.currentTimeMillis() + expirationTime);
@@ -32,13 +32,19 @@ public class TokenUtils {
         Map<String, Object> extra = new HashMap<>();
         extra.put("name", name);
 
-        // Construyo el token JWT utilizando la biblioteca Jwts
+        // Agrega los roles al mapa de claims adicionales
+        List<String> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        extra.put("roles", roles);
+
+        // Construye el token JWT utilizando la biblioteca Jwts
         return Jwts.builder()
                 .setSubject(email) // Establece el sujeto del token como el correo electrónico
                 .setExpiration(expirationDate) // Establece la fecha de expiración del token
                 .addClaims(extra) // Agrega los claims adicionales al token
                 .signWith(Keys.hmacShaKeyFor(ACCESS_TOKEN_SECRET.getBytes())) // Firma el token con la clave secreta
-                .compact();// Devuelve el token en formato compacto
+                .compact(); // Devuelve el token en formato compacto
     }
 
     /**

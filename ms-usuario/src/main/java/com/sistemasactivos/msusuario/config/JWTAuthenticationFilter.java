@@ -61,11 +61,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, Authentication authResult) throws IOException, ServletException {
         UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
 
-        // Crear un nuevo token JWT utilizando el nombre y correo electrónico del usuario autenticado
-        String token = TokenUtils.createToken(userDetails.getName(), userDetails.getUsername());
+        // Crear un nuevo token JWT utilizando el nombre, correo electrónico y roles del usuario autenticado
+        String token = TokenUtils.createToken(userDetails.getName(), userDetails.getUsername(), userDetails.getAuthorities());
 
         // Agregar el token JWT y el rol del usuario como encabezados de la respuesta
-        response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader("Authorization", token);
         response.addHeader("Role", " " + userDetails.getAuthorities());
 
         // Vaciar el buffer de salida de la respuesta
