@@ -5,6 +5,7 @@ import com.sistemasactivos.msbff.utils.StatusCodeHandler;
 import com.sistemasactivos.msbff.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -94,8 +95,9 @@ public class EmpleadoService implements IEmpleadoService {
      * @return `true` si el usuario tiene el rol de administrador, de lo contrario `false`.
      */
     public boolean isAdmin(ServerHttpRequest request) {
-        String token = request.getHeaders().getFirst("token");
-        return tokenUtils.validateToken(token) && tokenUtils.validateRoles(token, "admin");
+        HttpHeaders headers = request.getHeaders();
+        String token = tokenUtils.extractTokenFromHeaders(headers);
+        return token != null && tokenUtils.validateToken(token) && tokenUtils.validateRoles(token, "admin");
     }
 
     /**
@@ -105,7 +107,8 @@ public class EmpleadoService implements IEmpleadoService {
      * @return `true` si el usuario tiene el rol de usuario, de lo contrario `false`.
      */
     public boolean isUsuario(ServerHttpRequest request) {
-        String token = request.getHeaders().getFirst("token");
-        return tokenUtils.validateToken(token) && tokenUtils.validateRoles(token, "usuario");
+        HttpHeaders headers = request.getHeaders();
+        String token = tokenUtils.extractTokenFromHeaders(headers);
+        return token != null && tokenUtils.validateToken(token) && tokenUtils.validateRoles(token, "usuario");
     }
 }
