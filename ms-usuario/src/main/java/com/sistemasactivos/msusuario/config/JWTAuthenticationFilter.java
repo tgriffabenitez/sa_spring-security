@@ -65,7 +65,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = TokenUtils.createToken(userDetails.getName(), userDetails.getUsername(), userDetails.getAuthorities());
 
         // Agregar el token JWT y el rol del usuario como encabezados de la respuesta
-        response.addHeader("Authorization", token);
+        response.addHeader("Authorization", "Bearer " + token);
         response.addHeader("Role", " " + userDetails.getAuthorities());
 
         // Vaciar el buffer de salida de la respuesta
