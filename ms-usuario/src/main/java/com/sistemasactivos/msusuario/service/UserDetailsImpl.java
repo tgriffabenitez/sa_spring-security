@@ -17,6 +17,11 @@ public class UserDetailsImpl implements UserDetails {
 
     private final Usuario usuario;
 
+    /**
+     * Devuelve una colección de GrantedAuthority que representa los roles del usuario.
+     *
+     * @return Una colección de GrantedAuthority que representa los roles del usuario.
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<Rol> roles = usuario.getRoles();

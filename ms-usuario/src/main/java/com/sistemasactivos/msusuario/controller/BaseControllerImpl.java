@@ -15,6 +15,12 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
     @Autowired
     protected S service;
 
+    /**
+     * Obtiene todas las entidades.
+     *
+     * @return ResponseEntity con la lista de entidades si se encuentran, o un ResponseEntity vacío si no hay contenido.
+     *         En caso de error, se devuelve un ResponseEntity con el mensaje de error y el estado HTTP 500 (Internal Server Error).
+     */
     @GetMapping("")
     public ResponseEntity<?> getAll() {
         try {
@@ -29,6 +35,13 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
         }
     }
 
+    /**
+     * Obtiene una entidad por su ID.
+     *
+     * @param id ID de la entidad a buscar.
+     * @return ResponseEntity con la entidad si se encuentra, o un ResponseEntity con estado HTTP 404 (Not Found) si no se encuentra.
+     *         En caso de error, se devuelve un ResponseEntity con el mensaje de error y el estado HTTP 500 (Internal Server Error).
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         try {
@@ -46,6 +59,15 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
         }
     }
 
+    /**
+     * Guarda una nueva entidad.
+     *
+     * @param entity Entidad a guardar.
+     * @return ResponseEntity con la entidad guardada y estado HTTP 201 (Created) si se guarda correctamente.
+     *         Si la entidad es nula, se devuelve un ResponseEntity con estado HTTP 400 (Bad Request).
+     *         Si hay una violación de integridad de datos al guardar la entidad, se devuelve un ResponseEntity con estado HTTP 409 (Conflict).
+     *         En caso de error, se devuelve un ResponseEntity con el mensaje de error y el estado HTTP 500 (Internal Server Error).
+     */
     @PostMapping("")
     public ResponseEntity<?> save(@RequestBody E entity) {
         try {
@@ -63,6 +85,17 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
         }
     }
 
+    /**
+     * Actualiza una entidad existente.
+     *
+     * @param id     ID de la entidad a actualizar.
+     * @param entity Entidad actualizada.
+     * @return ResponseEntity con la entidad actualizada y estado HTTP 200 (OK) si se actualiza correctamente.
+     *         Si el ID es nulo o menor o igual a cero, se devuelve un ResponseEntity con estado HTTP 400 (Bad Request).
+     *         Si no se encuentra la entidad con el ID especificado, se devuelve un ResponseEntity con estado HTTP 404 (Not Found).
+     *         Si hay una violación de integridad de datos al actualizar la entidad, se devuelve un ResponseEntity con estado HTTP 409 (Conflict).
+     *         En caso de error, se devuelve un ResponseEntity con el mensaje de error y el estado HTTP 500 (Internal Server Error).
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody E entity) {
         try {
@@ -86,6 +119,15 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
         }
     }
 
+    /**
+     * Elimina una entidad por su ID.
+     *
+     * @param id ID de la entidad a eliminar.
+     * @return ResponseEntity con estado HTTP 204 (No Content) si la entidad se elimina correctamente.
+     *         Si el ID es nulo o menor o igual a cero, se devuelve un ResponseEntity con estado HTTP 400 (Bad Request).
+     *         Si no se encuentra la entidad con el ID especificado, se devuelve un ResponseEntity con estado HTTP 404 (Not Found).
+     *         Si ocurre un error al eliminar la entidad, se devuelve un ResponseEntity con el mensaje de error y el estado HTTP 500 (Internal Server Error).
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         try {

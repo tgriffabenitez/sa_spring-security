@@ -26,6 +26,14 @@ public class UsuarioRegisterServiceImpl implements UsuarioRegisterService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    /**
+     * Registra un nuevo usuario en el sistema.
+     *
+     * @param userRegistration Objeto que contiene los datos de registro del usuario.
+     * @return true si el usuario se registró correctamente, false en caso contrario.
+     * @throws Exception si ocurre un error durante el registro del usuario.
+     */
     @Override
     public boolean registerUser(UsuarioRegister userRegistration) throws Exception {
         // Verificar si el correo electrónico ya está registrado
