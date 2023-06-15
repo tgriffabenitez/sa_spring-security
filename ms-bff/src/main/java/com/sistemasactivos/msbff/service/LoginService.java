@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -28,9 +29,6 @@ public class LoginService implements ILoginService {
     @Autowired
     private TokenUtils tokenUtils;
 
-    private String userToken;
-    private String userRol;
-
     /**
      * Realiza el proceso de inicio de sesión.
      *
@@ -40,46 +38,84 @@ public class LoginService implements ILoginService {
      */
     @Override
     public Mono<?> login(LoginRequest loginRequest, ServerHttpResponse response) {
-        // Solicitud POST al endpoint "/login" utilizando WebClient
+
         return webClient.post()
                 .uri("/login")
                 .bodyValue(loginRequest)
                 .exchange()
-                .flatMap(clientResponse -> {
+                .flatMap(clientResponse -> handleLoginResponse(clientResponse, response));
+    }
 
-                    // Codigo de estado de la respuesta
-                    HttpStatusCode statusCode = clientResponse.statusCode();
+    /**
+     * Maneja la respuesta del servicio de inicio de sesión.
+     *
+     * @param clientResponse La respuesta del cliente al servicio de inicio de sesión.
+     * @param response       La respuesta HTTP que se utilizará para establecer las cookies de autenticación.
+     * @return Un Mono que emite el resultado del proceso de inicio de sesión.
+     */
+    private Mono<String> handleLoginResponse(ClientResponse clientResponse, ServerHttpResponse response) {
+        HttpStatusCode statusCode = clientResponse.statusCode();
 
-                    if (statusCode.is2xxSuccessful()) {
-                        HttpHeaders headers = clientResponse.headers().asHttpHeaders();
+        if (!statusCode.is2xxSuccessful()) {
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            return Mono.empty();
+        }
 
-                        // Obtengo los valores del authorization header
-                        List<String> authorizationValues = headers.get("Authorization");
-                        if (authorizationValues != null && !authorizationValues.isEmpty()) {
-                            userToken = authorizationValues.get(0);
-                            // si el token es valido, lo agrego a la respuesta
-                            if (tokenUtils.validateToken(userToken)) {
-                                response.getHeaders().add("Bearer", userToken);
-                            } else {
-                                // si el token no es valido, establezco el codigo de estado en la respuesta
-                                response.setStatusCode(HttpStatus.UNAUTHORIZED);
-                            }
-                        }
+        // Obtengo los valores del authorization header
+        HttpHeaders headers = clientResponse.headers().asHttpHeaders();
+        String token = extractTokenFromHeaders(headers);
 
-                        // Obtengo el rol del response
-                        List<String> roleValues = headers.get("Role");
-                        if (roleValues != null && !roleValues.isEmpty()) {
-                            userRol = roleValues.get(0);
-                        }
+        if (token == null || !tokenUtils.validateToken(token)) {
+            System.out.println("entre al if 2");
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            return Mono.empty();
+        }
 
-                        // Guardo el token y el rol en la cache
-                        cacheService.putDataInCache(userToken, userRol);
-                        return clientResponse.bodyToMono(String.class);
-                    } else {
-                        // El inicio de sesión no fue exitoso, establezco el código de estado en la respuesta
-                        response.setStatusCode(HttpStatus.UNAUTHORIZED);
-                        return Mono.empty();
-                    }
-                });
+        // Agrego el token a la respuesta
+        response.getHeaders().add("Bearer", "Bearer " + token);
+
+        String userRol = extractRoleFromHeaders(headers);
+        if (userRol == null || !tokenUtils.validateRoles(token, userRol)) {
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            return Mono.empty();
+        }
+
+        // Almaceno el token y el rol en la cache
+        cacheService.putDataInCache(token, userRol);
+        return clientResponse.bodyToMono(String.class);
+    }
+
+    /**
+     * Extrae el token de autenticación de los encabezados.
+     *
+     * @param headers Los encabezados HTTP de la respuesta del servicio de inicio de sesión.
+     * @return El token de autenticación o null si no se encuentra.
+     */
+    private String extractTokenFromHeaders(HttpHeaders headers) {
+        List<String> authorizationValues = headers.get("Authorization");
+        if (authorizationValues != null && !authorizationValues.isEmpty()) {
+            String bearerToken = authorizationValues.get(0);
+            return bearerToken.replace("Bearer ", "");
+        }
+        return null;
+    }
+
+    /**
+     * Extrae el rol del usuario de los encabezados.
+     *
+     * @param headers Los encabezados HTTP de la respuesta del servicio de inicio de sesión.
+     * @return El rol del usuario o null si no se encuentra.
+     */
+    private String extractRoleFromHeaders(HttpHeaders headers) {
+        List<String> roleValues = headers.get("Role");
+        if (roleValues != null && !roleValues.isEmpty()) {
+            String roleValue = roleValues.get(0);
+            if (roleValue.startsWith("[") && roleValue.endsWith("]")) {
+                // Eliminar los corchetes alrededor del valor del rol
+                roleValue = roleValue.substring(1, roleValue.length() - 1);
+            }
+            return roleValue;
+        }
+        return null;
     }
 }
