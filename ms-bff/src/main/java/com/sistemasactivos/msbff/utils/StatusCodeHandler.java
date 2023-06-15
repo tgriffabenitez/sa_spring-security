@@ -20,7 +20,6 @@ import reactor.core.publisher.Mono;
  * No encontre la discriminar los codigos 2xx, es por eso que cualquier codigo que sea del
  * tipo 2xx van a aparecer como un 200. Esto esta mal, pero no encontre la forma.
  */
-
 public class StatusCodeHandler {
 
     public static <T> Mono<T> clientResponse(ClientResponse clientResponse, Class<T> clazz) {

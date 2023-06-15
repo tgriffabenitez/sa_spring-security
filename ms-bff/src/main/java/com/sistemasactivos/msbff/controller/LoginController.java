@@ -16,6 +16,13 @@ public class LoginController {
     @Autowired
     private ILoginService loginService;
 
+    /**
+     * Realiza el proceso de inicio de sesión.
+     *
+     * @param loginRequest El objeto LoginRequest que contiene las credenciales de inicio de sesión.
+     * @param response     La respuesta HTTP que se utilizará para establecer las cookies de autenticación.
+     * @return Un Mono que emite el resultado del proceso de inicio de sesión.
+     */
     @PostMapping("")
     private Mono<?> login(@RequestBody LoginRequest loginRequest, ServerHttpResponse response) {
         return loginService.login(loginRequest, response);

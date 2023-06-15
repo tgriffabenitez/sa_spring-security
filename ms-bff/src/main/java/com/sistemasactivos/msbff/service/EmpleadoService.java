@@ -19,6 +19,11 @@ public class EmpleadoService implements IEmpleadoService {
     @Autowired
     private CacheService cacheService;
 
+    /**
+     * Obtiene todos los empleados.
+     *
+     * @return Un flujo de empleados.
+     */
     public Flux<Empleado> findAll() {
         return webClient.get()
                 .uri("/empleados")
@@ -26,6 +31,12 @@ public class EmpleadoService implements IEmpleadoService {
                 .bodyToFlux(Empleado.class);
     }
 
+    /**
+     * Obtiene un empleado por su id.
+     *
+     * @param id El id del empleado.
+     * @return Un empleado.
+     */
     public Mono<Empleado> findById(Long id) {
         return webClient.get()
                 .uri("/empleados/" + id)
@@ -33,6 +44,12 @@ public class EmpleadoService implements IEmpleadoService {
                 .bodyToMono(Empleado.class);
     }
 
+    /**
+     * Guarda un empleado.
+     *
+     * @param persona El empleado a guardar.
+     * @return El empleado guardado.
+     */
     public Mono<Empleado> save(Empleado persona) {
         return webClient.post()
                 .uri("/empleados")
@@ -40,12 +57,25 @@ public class EmpleadoService implements IEmpleadoService {
                 .exchangeToMono(clientResponse -> StatusCodeHandler.clientResponse(clientResponse, Empleado.class));
     }
 
+    /**
+     * Elimina un empleado.
+     *
+     * @param id El id del empleado a eliminar.
+     * @return Un mono vacío.
+     */
     public Mono<Void> delete(Long id) {
         return webClient.delete()
                 .uri("/empleados/" + id)
                 .exchangeToMono(clientResponse -> StatusCodeHandler.clientResponse(clientResponse, Void.class));
     }
 
+    /**
+     * Actualiza un empleado.
+     *
+     * @param id      El id del empleado a actualizar.
+     * @param persona El empleado con los datos actualizados.
+     * @return El empleado actualizado.
+     */
     public Mono<Empleado> update(Long id, Empleado persona) {
         return webClient.put()
                 .uri("/empleados/" + id)
@@ -53,12 +83,24 @@ public class EmpleadoService implements IEmpleadoService {
                 .exchangeToMono(clientResponse -> StatusCodeHandler.clientResponse(clientResponse, Empleado.class));
     }
 
+    /**
+     * Verifica si el usuario tiene rol de administrador.
+     *
+     * @param request La solicitud HTTP del cliente.
+     * @return `true` si el usuario tiene rol de administrador, de lo contrario `false`.
+     */
     public boolean isAdmin(ServerHttpRequest request) {
         String token = request.getHeaders().getFirst("token");
         String role = (String) cacheService.getDataFromCache(token);
         return role != null && role.equals("[admin]");
     }
 
+    /**
+     * Verifica si el usuario tiene rol de usuario.
+     *
+     * @param request La solicitud HTTP del cliente.
+     * @return `true` si el usuario tiene rol de usuario, de lo contrario `false`.
+     */
     public boolean isUsuario(ServerHttpRequest request) {
         String token = request.getHeaders().getFirst("token");
         String role = (String) cacheService.getDataFromCache(token);

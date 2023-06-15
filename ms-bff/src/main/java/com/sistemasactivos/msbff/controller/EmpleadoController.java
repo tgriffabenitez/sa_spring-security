@@ -17,6 +17,12 @@ public class EmpleadoController {
     @Autowired
     private EmpleadoService empleadoService;
 
+    /**
+     * Obtiene todos los empleados.
+     *
+     * @param request La solicitud HTTP entrante.
+     * @return ResponseEntity con la lista de empleados o un mensaje de error y código de estado correspondiente.
+     */
     @GetMapping("")
     public ResponseEntity<?> findAll(ServerHttpRequest request) {
         try {
@@ -30,6 +36,13 @@ public class EmpleadoController {
         }
     }
 
+    /**
+     * Obtiene un empleado por su ID.
+     *
+     * @param id      El ID del empleado a buscar.
+     * @param request La solicitud HTTP entrante.
+     * @return ResponseEntity con el empleado encontrado o un mensaje de error y código de estado correspondiente.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id, ServerHttpRequest request) {
         try {
@@ -43,6 +56,13 @@ public class EmpleadoController {
         }
     }
 
+    /**
+     * Crea un nuevo empleado.
+     *
+     * @param empleado El objeto Empleado que contiene los datos del empleado a crear.
+     * @param request  La solicitud HTTP entrante.
+     * @return ResponseEntity con el empleado creado o un mensaje de error y código de estado correspondiente.
+     */
     @PostMapping("")
     public ResponseEntity<?> save(@RequestBody Empleado empleado, ServerHttpRequest request) {
         try {
@@ -56,6 +76,14 @@ public class EmpleadoController {
         }
     }
 
+    /**
+     * Actualiza un empleado existente.
+     *
+     * @param id       El ID del empleado a actualizar.
+     * @param empleado El objeto Empleado que contiene los datos actualizados del empleado.
+     * @param request  La solicitud HTTP entrante.
+     * @return ResponseEntity con el empleado actualizado o un mensaje de error y código de estado correspondiente.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Empleado empleado, ServerHttpRequest request) {
         try {
@@ -69,6 +97,13 @@ public class EmpleadoController {
         }
     }
 
+    /**
+     * Elimina un empleado por su ID.
+     *
+     * @param id      El ID del empleado a eliminar.
+     * @param request La solicitud HTTP entrante.
+     * @return ResponseEntity con el código de estado correspondiente (204 - NO_CONTENT) o un mensaje de error y código de estado correspondiente.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id, ServerHttpRequest request) {
         try {

@@ -15,6 +15,12 @@ public class RegisterService implements IRegisterService {
     @Qualifier("signInWebClient")
     private WebClient webClient;
 
+    /**
+     * Realiza el proceso de registro de usuario.
+     *
+     * @param registerRequest El objeto RegisterRequest que contiene los datos del usuario a registrar.
+     * @return Un Mono que emite el resultado del proceso de registro.
+     */
     @Override
     public Mono<?> signIn(RegisterRequest registerRequest) {
         return webClient.post()

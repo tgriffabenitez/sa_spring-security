@@ -14,6 +14,12 @@ public class RegisterController {
     @Autowired
     private IRegisterService registerService;
 
+    /**
+     * Realiza el proceso de registro de un nuevo usuario.
+     *
+     * @param registerRequest El objeto RegisterRequest que contiene los datos de registro del usuario.
+     * @return Un Mono que emite el resultado del proceso de registro.
+     */
     @PostMapping("")
     private Mono<?> signup(@RequestBody RegisterRequest registerRequest) {
         return registerService.signIn(registerRequest);

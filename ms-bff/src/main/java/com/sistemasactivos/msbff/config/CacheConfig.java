@@ -10,6 +10,11 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class CacheConfig {
 
+    /**
+     * Crea y configura la instancia de la caché.
+     *
+     * @return La instancia de la caché configurada.
+     */
     @Bean
     public Cache<String, Object> cache() {
         return Caffeine.newBuilder()

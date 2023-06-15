@@ -18,6 +18,11 @@ import reactor.netty.http.client.HttpClient;
 @EnableWebFlux
 public class WebFluxConfig implements WebFluxConfigurer {
 
+    /**
+     * Crea un WebClient para comunicarse con el servicio de inicio de sesión.
+     *
+     * @return El WebClient configurado para el servicio de inicio de sesión.
+     */
     @Bean
     @Qualifier("signInWebClient")
     public WebClient signInWebClient() {
@@ -25,6 +30,11 @@ public class WebFluxConfig implements WebFluxConfigurer {
         return createWebClient(baseUrl);
     }
 
+    /**
+     * Crea un WebClient para comunicarse con el servicio de empleados.
+     *
+     * @return El WebClient configurado para el servicio de empleados.
+     */
     @Bean
     @Qualifier("empleadosWebClient")
     public WebClient msempleadosWebClient() {
@@ -32,6 +42,12 @@ public class WebFluxConfig implements WebFluxConfigurer {
         return createWebClient(baseUrl);
     }
 
+    /**
+     * Crea y configura un WebClient con la configuración proporcionada.
+     *
+     * @param baseUrl La URL base del servicio.
+     * @return El WebClient configurado.
+     */
     private WebClient createWebClient(String baseUrl) {
         HttpClient httpClient = HttpClient.create()
                 .secure(sslContextSpec -> sslContextSpec.sslContext(SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE)));
