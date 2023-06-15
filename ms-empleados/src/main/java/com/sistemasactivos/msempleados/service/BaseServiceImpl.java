@@ -16,6 +16,12 @@ public class BaseServiceImpl <E extends Base, ID extends Serializable> implement
         this.baseRepository = baseRepository;
     }
 
+    /**
+     * Recupera todos los elementos de la entidad.
+     *
+     * @return Una lista de elementos de la entidad.
+     * @throws Exception si ocurre un error al recuperar los elementos.
+     */
     @Override
     @Transactional(readOnly = true)
     public List<E> findAll() throws Exception {
@@ -26,6 +32,14 @@ public class BaseServiceImpl <E extends Base, ID extends Serializable> implement
         }
     }
 
+
+    /**
+     * Recupera un elemento de la entidad por su ID.
+     *
+     * @param id El ID del elemento a recuperar.
+     * @return El elemento encontrado, o null si no se encuentra ninguno.
+     * @throws Exception si ocurre un error al recuperar el elemento.
+     */
     @Override
     @Transactional(readOnly = true)
     public E findById(ID id) throws Exception {
@@ -37,6 +51,13 @@ public class BaseServiceImpl <E extends Base, ID extends Serializable> implement
         }
     }
 
+    /**
+     * Guarda un elemento de la entidad.
+     *
+     * @param entity El elemento a guardar.
+     * @return El elemento guardado.
+     * @throws Exception si ocurre un error al guardar el elemento.
+     */
     @Override
     @Transactional
     public E save(E entity) throws Exception {
@@ -47,6 +68,14 @@ public class BaseServiceImpl <E extends Base, ID extends Serializable> implement
         }
     }
 
+    /**
+     * Actualiza un elemento de la entidad por su ID.
+     *
+     * @param id     El ID del elemento a actualizar.
+     * @param entity El nuevo estado del elemento.
+     * @return El elemento actualizado.
+     * @throws Exception si ocurre un error al actualizar el elemento.
+     */
     @Override
     @Transactional
     public E update(ID id, E entity) throws Exception {
@@ -66,6 +95,13 @@ public class BaseServiceImpl <E extends Base, ID extends Serializable> implement
         }
     }
 
+    /**
+     * Elimina un elemento de la entidad por su ID.
+     *
+     * @param id El ID del elemento a eliminar.
+     * @return true si el elemento se eliminó correctamente, false si no se encontró el elemento.
+     * @throws Exception si ocurre un error al eliminar el elemento.
+     */
     @Override
     @Transactional
     public boolean delete(ID id) throws Exception {

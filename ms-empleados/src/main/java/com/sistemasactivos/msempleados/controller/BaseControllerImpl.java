@@ -15,6 +15,11 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
     @Autowired
     protected S service;
 
+    /**
+     * Obtiene todos los elementos de la entidad.
+     *
+     * @return ResponseEntity con la lista de elementos si se encuentran, o un ResponseEntity con código 204 si no hay elementos.
+     */
     @GetMapping("")
     public ResponseEntity<?> getAll() {
         try {
@@ -29,6 +34,12 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
         }
     }
 
+    /**
+     * Obtiene un elemento de la entidad por su ID.
+     *
+     * @param id El ID del elemento a buscar.
+     * @return ResponseEntity con el elemento encontrado si existe, o un ResponseEntity con código 404 si no se encuentra.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         try {
@@ -46,6 +57,12 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
         }
     }
 
+    /**
+     * Guarda un nuevo elemento de la entidad.
+     *
+     * @param entity El elemento a guardar.
+     * @return ResponseEntity con el elemento guardado si se guarda correctamente, o un ResponseEntity con código 409 si hay conflicto.
+     */
     @PostMapping("")
     public ResponseEntity<?> save(@RequestBody E entity) {
         try {
@@ -63,6 +80,13 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
         }
     }
 
+    /**
+     * Actualiza un elemento de la entidad por su ID.
+     *
+     * @param id     El ID del elemento a actualizar.
+     * @param entity El nuevo estado del elemento.
+     * @return ResponseEntity con el elemento actualizado si se actualiza correctamente, o un ResponseEntity con código 404 si no se encuentra el elemento o código 409 si hay conflicto.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody E entity) {
         try {
@@ -86,6 +110,12 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
         }
     }
 
+    /**
+     * Elimina un elemento de la entidad por su ID.
+     *
+     * @param id El ID del elemento a eliminar.
+     * @return ResponseEntity con código 204 si se elimina correctamente, o un ResponseEntity con código 404 si no se encuentra el elemento o código 409 si hay conflicto.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
