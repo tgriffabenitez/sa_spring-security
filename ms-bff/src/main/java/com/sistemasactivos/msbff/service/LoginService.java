@@ -13,8 +13,6 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 
 @Service
 public class LoginService implements ILoginService {
@@ -61,61 +59,27 @@ public class LoginService implements ILoginService {
             return Mono.empty();
         }
 
-        // Obtengo los valores del authorization header
+        // Obtengo el token del header
         HttpHeaders headers = clientResponse.headers().asHttpHeaders();
-        String token = extractTokenFromHeaders(headers);
-
+        String token = tokenUtils.extractTokenFromHeaders(headers);
         if (token == null || !tokenUtils.validateToken(token)) {
-            System.out.println("entre al if 2");
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return Mono.empty();
         }
 
-        // Agrego el token a la respuesta
-        response.getHeaders().add("Bearer", "Bearer " + token);
-
-        String userRol = extractRoleFromHeaders(headers);
+        // Obtengo el rol del header
+        String userRol = tokenUtils.extractRoleFromHeaders(headers);
         if (userRol == null || !tokenUtils.validateRoles(token, userRol)) {
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return Mono.empty();
         }
 
+        // Agrego el token al header del response
+        response.getHeaders().add("Bearer", "Bearer " + token);
+        response.getHeaders().add("Roles", userRol);
+
         // Almaceno el token y el rol en la cache
         cacheService.putDataInCache(token, userRol);
         return clientResponse.bodyToMono(String.class);
-    }
-
-    /**
-     * Extrae el token de autenticación de los encabezados.
-     *
-     * @param headers Los encabezados HTTP de la respuesta del servicio de inicio de sesión.
-     * @return El token de autenticación o null si no se encuentra.
-     */
-    private String extractTokenFromHeaders(HttpHeaders headers) {
-        List<String> authorizationValues = headers.get("Authorization");
-        if (authorizationValues != null && !authorizationValues.isEmpty()) {
-            String bearerToken = authorizationValues.get(0);
-            return bearerToken.replace("Bearer ", "");
-        }
-        return null;
-    }
-
-    /**
-     * Extrae el rol del usuario de los encabezados.
-     *
-     * @param headers Los encabezados HTTP de la respuesta del servicio de inicio de sesión.
-     * @return El rol del usuario o null si no se encuentra.
-     */
-    private String extractRoleFromHeaders(HttpHeaders headers) {
-        List<String> roleValues = headers.get("Role");
-        if (roleValues != null && !roleValues.isEmpty()) {
-            String roleValue = roleValues.get(0);
-            if (roleValue.startsWith("[") && roleValue.endsWith("]")) {
-                // Eliminar los corchetes alrededor del valor del rol
-                roleValue = roleValue.substring(1, roleValue.length() - 1);
-            }
-            return roleValue;
-        }
-        return null;
     }
 }
