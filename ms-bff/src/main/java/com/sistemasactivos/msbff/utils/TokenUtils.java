@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -28,7 +29,6 @@ public class TokenUtils {
 
             return true;
         } catch (JwtException e) {
-            System.out.println(e.getMessage());
             return false;
         }
     }
@@ -76,5 +76,39 @@ public class TokenUtils {
     public boolean validateRoles(String token, String requiredRole) {
         List<String> roles = getRolesFromToken(token);
         return roles != null && roles.contains(requiredRole);
+    }
+
+    /**
+     * Extrae el token de autenticación de los encabezados.
+     *
+     * @param headers Los encabezados HTTP de la respuesta del servicio de inicio de sesión.
+     * @return El token de autenticación o null si no se encuentra.
+     */
+    public String extractTokenFromHeaders(HttpHeaders headers) {
+        List<String> authorizationValues = headers.get("Authorization");
+        if (authorizationValues != null && !authorizationValues.isEmpty()) {
+            String bearerToken = authorizationValues.get(0);
+            return bearerToken.replace("Bearer ", "").trim();
+        }
+        return null;
+    }
+
+    /**
+     * Extrae el rol del usuario de los encabezados.
+     *
+     * @param headers Los encabezados HTTP de la respuesta del servicio de inicio de sesión.
+     * @return El rol del usuario o null si no se encuentra.
+     */
+    public String extractRoleFromHeaders(HttpHeaders headers) {
+        List<String> roleValues = headers.get("Role");
+        if (roleValues != null && !roleValues.isEmpty()) {
+            String roleValue = roleValues.get(0);
+            if (roleValue.startsWith("[") && roleValue.endsWith("]")) {
+                // Eliminar los corchetes alrededor del valor del rol
+                roleValue = roleValue.substring(1, roleValue.length() - 1);
+            }
+            return roleValue;
+        }
+        return null;
     }
 }
