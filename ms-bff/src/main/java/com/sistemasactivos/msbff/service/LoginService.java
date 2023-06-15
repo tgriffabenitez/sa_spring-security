@@ -1,6 +1,7 @@
 package com.sistemasactivos.msbff.service;
 
 import com.sistemasactivos.msbff.model.LoginRequest;
+import com.sistemasactivos.msbff.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,9 @@ public class LoginService implements ILoginService {
     @Autowired
     @Qualifier("signInWebClient")
     private WebClient webClient;
+
+    @Autowired
+    private TokenUtils tokenUtils;
 
     private String userToken;
     private String userRol;
@@ -53,7 +57,13 @@ public class LoginService implements ILoginService {
                         List<String> authorizationValues = headers.get("Authorization");
                         if (authorizationValues != null && !authorizationValues.isEmpty()) {
                             userToken = authorizationValues.get(0);
-                            response.getHeaders().add("Bearer", userToken);
+                            // si el token es valido, lo agrego a la respuesta
+                            if (tokenUtils.validateToken(userToken)) {
+                                response.getHeaders().add("Bearer", userToken);
+                            } else {
+                                // si el token no es valido, establezco el codigo de estado en la respuesta
+                                response.setStatusCode(HttpStatus.UNAUTHORIZED);
+                            }
                         }
 
                         // Obtengo el rol del response

@@ -2,6 +2,7 @@ package com.sistemasactivos.msbff.service;
 
 import com.sistemasactivos.msbff.model.Empleado;
 import com.sistemasactivos.msbff.utils.StatusCodeHandler;
+import com.sistemasactivos.msbff.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -18,6 +19,9 @@ public class EmpleadoService implements IEmpleadoService {
 
     @Autowired
     private CacheService cacheService;
+
+    @Autowired
+    private TokenUtils tokenUtils;
 
     /**
      * Obtiene todos los empleados.
@@ -84,26 +88,24 @@ public class EmpleadoService implements IEmpleadoService {
     }
 
     /**
-     * Verifica si el usuario tiene rol de administrador.
+     * Verifica si el usuario tiene el rol de administrador.
      *
-     * @param request La solicitud HTTP del cliente.
-     * @return `true` si el usuario tiene rol de administrador, de lo contrario `false`.
+     * @param request La solicitud HTTP del cliente que contiene el token de acceso.
+     * @return `true` si el usuario tiene el rol de administrador, de lo contrario `false`.
      */
     public boolean isAdmin(ServerHttpRequest request) {
         String token = request.getHeaders().getFirst("token");
-        String role = (String) cacheService.getDataFromCache(token);
-        return role != null && role.equals("[admin]");
+        return tokenUtils.validateToken(token) && tokenUtils.validateRoles(token, "admin");
     }
 
     /**
-     * Verifica si el usuario tiene rol de usuario.
+     * Verifica si el usuario tiene el rol de usuario.
      *
-     * @param request La solicitud HTTP del cliente.
-     * @return `true` si el usuario tiene rol de usuario, de lo contrario `false`.
+     * @param request La solicitud HTTP del cliente que contiene el token de acceso.
+     * @return `true` si el usuario tiene el rol de usuario, de lo contrario `false`.
      */
     public boolean isUsuario(ServerHttpRequest request) {
         String token = request.getHeaders().getFirst("token");
-        String role = (String) cacheService.getDataFromCache(token);
-        return role != null && role.equals("[usuario]");
+        return tokenUtils.validateToken(token) && tokenUtils.validateRoles(token, "usuario");
     }
 }
