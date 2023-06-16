@@ -1,6 +1,7 @@
 package com.sistemasactivos.msbff.service;
 
 import com.sistemasactivos.msbff.model.Empleado;
+import com.sistemasactivos.msbff.utils.CacheUtils;
 import com.sistemasactivos.msbff.utils.StatusCodeHandler;
 import com.sistemasactivos.msbff.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class EmpleadoService implements IEmpleadoService {
 
     @Autowired
     private TokenUtils tokenUtils;
+
+    @Autowired
+    private CacheUtils cacheUtils;
 
     /**
      * Obtiene todos los empleados.
@@ -89,7 +93,7 @@ public class EmpleadoService implements IEmpleadoService {
     }
 
     /**
-     * Verifica si el usuario tiene el rol de administrador.
+     * Busco en la cache si el token existe y si el rol es de admin.
      *
      * @param request La solicitud HTTP del cliente que contiene el token de acceso.
      * @return `true` si el usuario tiene el rol de administrador, de lo contrario `false`.
@@ -97,11 +101,11 @@ public class EmpleadoService implements IEmpleadoService {
     public boolean isAdmin(ServerHttpRequest request) {
         HttpHeaders headers = request.getHeaders();
         String token = tokenUtils.extractTokenFromHeaders(headers);
-        return token != null && tokenUtils.validateToken(token) && tokenUtils.validateRoles(token, "admin");
+        return token != null && cacheUtils.isTokenInCache(token) && cacheUtils.getValueFromCache(token).equals("admin");
     }
 
     /**
-     * Verifica si el usuario tiene el rol de usuario.
+     * Busco en la cache si el token existe y si el rol es de usuario.
      *
      * @param request La solicitud HTTP del cliente que contiene el token de acceso.
      * @return `true` si el usuario tiene el rol de usuario, de lo contrario `false`.
@@ -109,6 +113,6 @@ public class EmpleadoService implements IEmpleadoService {
     public boolean isUsuario(ServerHttpRequest request) {
         HttpHeaders headers = request.getHeaders();
         String token = tokenUtils.extractTokenFromHeaders(headers);
-        return token != null && tokenUtils.validateToken(token) && tokenUtils.validateRoles(token, "usuario");
+        return token != null && cacheUtils.isTokenInCache(token) && cacheUtils.getValueFromCache(token).equals("usuario");
     }
 }
