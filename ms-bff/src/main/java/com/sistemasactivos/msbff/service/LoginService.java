@@ -1,6 +1,7 @@
 package com.sistemasactivos.msbff.service;
 
 import com.sistemasactivos.msbff.model.LoginRequest;
+import com.sistemasactivos.msbff.utils.CacheUtils;
 import com.sistemasactivos.msbff.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,12 +14,13 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 
+/**
+ * Servicio encargado del proceso de inicio de sesión y manejo de respuestas.
+ */
 @Service
 public class LoginService implements ILoginService {
-
-    @Autowired
-    private CacheService cacheService;
 
     @Autowired
     @Qualifier("signInWebClient")
@@ -26,6 +28,9 @@ public class LoginService implements ILoginService {
 
     @Autowired
     private TokenUtils tokenUtils;
+
+    @Autowired
+    private CacheUtils cacheUtils;
 
     /**
      * Realiza el proceso de inicio de sesión.
@@ -52,8 +57,9 @@ public class LoginService implements ILoginService {
      * @return Un Mono que emite el resultado del proceso de inicio de sesión.
      */
     private Mono<String> handleLoginResponse(ClientResponse clientResponse, ServerHttpResponse response) {
-        HttpStatusCode statusCode = clientResponse.statusCode();
 
+        // Si el servicio de inicio de sesión no responde con un código 2xx, retorno un error
+        HttpStatusCode statusCode = clientResponse.statusCode();
         if (!statusCode.is2xxSuccessful()) {
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return Mono.empty();
@@ -61,25 +67,25 @@ public class LoginService implements ILoginService {
 
         // Obtengo el token del header
         HttpHeaders headers = clientResponse.headers().asHttpHeaders();
-        String token = tokenUtils.extractTokenFromHeaders(headers);
-        if (token == null || !tokenUtils.validateToken(token)) {
+        String token = tokenUtils.getTokenFromHeaders(headers);
+        if (token == null || !tokenUtils.isTokenValid(token)) {
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return Mono.empty();
         }
 
-        // Obtengo el rol del header
-        String userRol = tokenUtils.extractRoleFromHeaders(headers);
-        if (userRol == null || !tokenUtils.validateRoles(token, userRol)) {
+        // Obtengo el rol del usuario desde el token
+        List<String> userRol = tokenUtils.getRolesFromToken(token);
+        if (userRol == null || userRol.isEmpty()) {
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return Mono.empty();
         }
 
         // Agrego el token al header del response
         response.getHeaders().add("Bearer", "Bearer " + token);
-        response.getHeaders().add("Roles", userRol);
 
         // Almaceno el token y el rol en la cache
-        cacheService.putDataInCache(token, userRol);
+        cacheUtils.putDataInCache(token, userRol);
+
         return clientResponse.bodyToMono(String.class);
     }
 }
