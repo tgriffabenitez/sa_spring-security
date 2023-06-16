@@ -7,8 +7,12 @@ import io.jsonwebtoken.Jwts;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
+/**
+ * Clase utilitaria para el manejo del token.
+ */
 @Component
 public class TokenUtils {
 
@@ -20,16 +24,40 @@ public class TokenUtils {
      * @param token El token de acceso.
      * @return true si el token es válido, false en caso contrario.
      */
-    public boolean validateToken(String token) {
+    public boolean isTokenValid(String token) {
         try {
-            Jwts.parserBuilder()
+            Jws<Claims> claimsJws = Jwts.parserBuilder()
                     .setSigningKey(ACCESS_TOKEN_SECRET.getBytes()) // Configura la clave secreta para validar la firma del token
                     .build()
                     .parseClaimsJws(token);
 
             return true;
         } catch (JwtException e) {
-            return false;
+            throw new JwtException("El token no es valido.");
+        }
+    }
+
+    /**
+     * Verifica si un token ha expirado.
+     *
+     * @param token el token a verificar.
+     * @return {@code true} si el token ha expirado, {@code false} en caso contrario.
+     * @throws JwtException si ocurre un error al validar el token.
+     */
+    public boolean isTokenExpired(String token) throws JwtException {
+        try {
+            Jws<Claims> claimsJws = Jwts.parserBuilder()
+                    .setSigningKey(ACCESS_TOKEN_SECRET.getBytes())
+                    .build()
+                    .parseClaimsJws(token);
+
+            Date expirationDate = claimsJws.getBody().getExpiration();
+            Date currentDate = new Date();
+
+            return expirationDate == null || !currentDate.before(expirationDate);
+        } catch (JwtException e) {
+            throw new JwtException("Token expirado. Inicie sesión nuevamente");
+
         }
     }
 
@@ -67,47 +95,16 @@ public class TokenUtils {
     }
 
     /**
-     * Valida si un token de acceso contiene un rol específico.
-     *
-     * @param token        El token de acceso a validar.
-     * @param requiredRole El rol requerido a verificar en el token.
-     * @return true si el token contiene el rol requerido, false si el token no es válido o no contiene el rol.
-     */
-    public boolean validateRoles(String token, String requiredRole) {
-        List<String> roles = getRolesFromToken(token);
-        return roles != null && roles.contains(requiredRole);
-    }
-
-    /**
      * Extrae el token de autenticación de los encabezados.
      *
      * @param headers Los encabezados HTTP de la respuesta del servicio de inicio de sesión.
      * @return El token de autenticación o null si no se encuentra.
      */
-    public String extractTokenFromHeaders(HttpHeaders headers) {
+    public String getTokenFromHeaders(HttpHeaders headers) {
         List<String> authorizationValues = headers.get("Authorization");
         if (authorizationValues != null && !authorizationValues.isEmpty()) {
             String bearerToken = authorizationValues.get(0);
             return bearerToken.replace("Bearer ", "").trim();
-        }
-        return null;
-    }
-
-    /**
-     * Extrae el rol del usuario de los encabezados.
-     *
-     * @param headers Los encabezados HTTP de la respuesta del servicio de inicio de sesión.
-     * @return El rol del usuario o null si no se encuentra.
-     */
-    public String extractRoleFromHeaders(HttpHeaders headers) {
-        List<String> roleValues = headers.get("Role");
-        if (roleValues != null && !roleValues.isEmpty()) {
-            String roleValue = roleValues.get(0);
-            if (roleValue.startsWith("[") && roleValue.endsWith("]")) {
-                // Eliminar los corchetes alrededor del valor del rol
-                roleValue = roleValue.substring(1, roleValue.length() - 1);
-            }
-            return roleValue;
         }
         return null;
     }
