@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 
 
 public class TokenUtils {
-    private final static String ACCESS_TOKEN_SECRET = "4qhq8LrEBfYcaRHxhdb9zURb2rf8e7Ud";
-    private final static Long ACCES_TOCKEN_LIFE = 2592000L; // 30 dias
+    public final static String ACCESS_TOKEN_SECRET = "4qhq8LrEBfYcaRHxhdb9zURb2rf8e7Ud";
+    private final static Long ACCES_TOCKEN_LIFE = 60L; // 60 segundos
 
     /**
      * Crea un token de acceso con los datos proporcionados.
@@ -37,6 +37,7 @@ public class TokenUtils {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
         extra.put("roles", roles);
+        extra.put("exp", expirationDate.getTime() / 1000);
 
         // Construye el token JWT utilizando la biblioteca Jwts
         return Jwts.builder()
