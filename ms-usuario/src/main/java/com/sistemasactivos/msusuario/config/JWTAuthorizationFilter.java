@@ -34,7 +34,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             String token = bearerToken.replace("Bearer ", "");
 
             // Obtengo el rol del usuario
-            String role = request.getHeader("Role").replace("[", "").replace("]", "");
+            String role = request.getHeader("Role");
 
             try {
                 // Obtengo la autenticación de usuario a partir del token
