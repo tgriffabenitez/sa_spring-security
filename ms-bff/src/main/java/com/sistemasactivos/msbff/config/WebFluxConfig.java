@@ -14,6 +14,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
 
+/**
+ * Configuración para WebFlux que habilita la configuración y creación de WebClients.
+ */
 @Configuration
 @EnableWebFlux
 public class WebFluxConfig implements WebFluxConfigurer {
