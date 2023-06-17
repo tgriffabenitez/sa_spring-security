@@ -9,6 +9,9 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Clase que representa a un usuario en el sistema.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

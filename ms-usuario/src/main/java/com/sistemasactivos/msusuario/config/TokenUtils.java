@@ -11,9 +11,11 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+/**
+ * Utilidades para la manipulación de tokens JWT.
+ */
 public class TokenUtils {
-    public final static String ACCESS_TOKEN_SECRET = "4qhq8LrEBfYcaRHxhdb9zURb2rf8e7Ud";
+    private final static String ACCESS_TOKEN_SECRET = "4qhq8LrEBfYcaRHxhdb9zURb2rf8e7Ud";
     private final static Long ACCES_TOCKEN_LIFE = 60L; // 60 segundos
 
     /**

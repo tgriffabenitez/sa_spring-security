@@ -8,6 +8,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementación de UserDetailsService para cargar los detalles del usuario a partir del nombre de usuario (email).
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired

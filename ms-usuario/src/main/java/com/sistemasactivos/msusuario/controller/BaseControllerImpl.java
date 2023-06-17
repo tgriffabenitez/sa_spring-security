@@ -10,6 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Implementación base de un controlador RESTful.
+ *
+ * @param <E> El tipo de entidad manejada por el controlador.
+ * @param <S> El tipo de servicio asociado al controlador.
+ */
 public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceImpl<E, Long>> implements BaseController<E, Long> {
 
     @Autowired
