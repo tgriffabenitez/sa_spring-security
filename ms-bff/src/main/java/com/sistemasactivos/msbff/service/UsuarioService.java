@@ -51,6 +51,7 @@ public class UsuarioService {
                 .bodyToFlux(UsuarioDTO.class)
                 .map(usuario -> {
                     UsuarioDTO usuarioDTO = new UsuarioDTO();
+                    usuarioDTO.setId(usuario.getId());
                     usuarioDTO.setEmail(usuario.getEmail());
                     usuarioDTO.setNombre(usuario.getNombre());
                     usuarioDTO.setRoles(usuario.getRoles());
