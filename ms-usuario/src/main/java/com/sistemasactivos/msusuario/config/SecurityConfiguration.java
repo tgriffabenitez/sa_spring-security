@@ -19,8 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 public class SecurityConfiguration {
 
-    private UserDetailsService userDetailsService;
-    private JWTAuthorizationFilter jwtAuthorizationFilter;
+    private final UserDetailsService userDetailsService;
+    private final JWTAuthorizationFilter jwtAuthorizationFilter;
 
     /**
      * Configura y devuelve el AuthenticationManager.
@@ -54,17 +54,19 @@ public class SecurityConfiguration {
         jwtAuthenticationFilter.setFilterProcessesUrl("/login");
 
         return http
-                .csrf().disable() // Deshabilitar la protección CSRF
+                .csrf().disable()
+                .cors().disable()
                 .authorizeRequests()
-                    .requestMatchers("/signup").permitAll() // Permitir el acceso a la ruta /signup sin autenticación
-                    .requestMatchers("/login").permitAll() // Permitir el acceso a la ruta /login sin autenticación
-                .anyRequest().authenticated() // Requiere autenticación para cualquier otra solicitud
+                .requestMatchers("/signup").permitAll()
+                .requestMatchers("/login").permitAll()
+                .requestMatchers("/api/**").hasAnyAuthority("admin")
+                .anyRequest().authenticated()
                 .and()
-                .sessionManagement() // Configuración de gestión de sesión
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Establecer la política de creación de sesiones en STATELESS
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(jwtAuthenticationFilter) // Agregar el filtro de autenticación JWT
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class) // Agregar el filtro de autorización JWT antes del filtro UsernamePasswordAuthenticationFilter
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtAuthorizationFilter, JWTAuthenticationFilter.class)
                 .build();
     }
 
