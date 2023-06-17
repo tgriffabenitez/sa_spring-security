@@ -1,0 +1,466 @@
+{
+	"info": {
+		"_postman_id": "33a2936c-9dd6-4461-b558-a102c623bf77",
+		"name": "sa_curso-security",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24393916"
+	},
+	"item": [
+		{
+			"name": "crear usuario",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"Tomas\",\r\n    \"email\": \"tomas@gmail.com\",\r\n    \"password\": \"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:443/signup",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "443",
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[admin] login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var rol = pm.response.headers.get('Role');\r",
+							"var token = pm.response.headers.get('Bearer');\r",
+							"\r",
+							"console.log(rol);\r",
+							"console.log(token);\r",
+							"\r",
+							"pm.environment.set('Bearer', token);\r",
+							"pm.environment.set('Role', rol);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"admin\",\r\n    \"password\": \"admin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:443/login",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "443",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[usuario] login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var rol = pm.response.headers.get('Roles');\r",
+							"var token = pm.response.headers.get('Bearer');\r",
+							"\r",
+							"console.log(rol);\r",
+							"console.log(token);\r",
+							"\r",
+							"pm.environment.set('Bearer', token);\r",
+							"pm.environment.set('Roles', rol);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"usuario\",\r\n    \"password\": \"usuario\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:443/login",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "443",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[admin/usuario] traer empleados",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "{{Bearer}}",
+						"type": "text"
+					},
+					{
+						"key": "Role",
+						"value": "{{Role}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:443/api/v1/empleados",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "443",
+					"path": [
+						"api",
+						"v1",
+						"empleados"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[admin/usuario] traer un empleado",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "{{Bearer}}",
+						"type": "text"
+					},
+					{
+						"key": "Role",
+						"value": "{{Role}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:443/api/v1/empleados/1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "443",
+					"path": [
+						"api",
+						"v1",
+						"empleados",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[admin] alta empleado",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "{{Bearer}}",
+						"type": "text"
+					},
+					{
+						"key": "Role",
+						"value": "{{Role}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"Tomas\",\r\n    \"apellido\": \"Griffa\",\r\n    \"email\": \"tgriffa@gmail.com\",\r\n    \"telefono\": \"11.1111.1111\",\r\n    \"direccion\": \"Calle 1, piso 2, dpt A\",\r\n    \"ciudad\": \"Bs As\",\r\n    \"pais\": \"Argentina\",\r\n    \"cargo\": \"Programador Java\",\r\n    \"salario\": \"1000000000\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:443/api/v1/empleados",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "443",
+					"path": [
+						"api",
+						"v1",
+						"empleados"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[admin] modificar empleado",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "{{Bearer}}",
+						"type": "text"
+					},
+					{
+						"key": "Role",
+						"value": "{{Role}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"Tomas Martin\",\r\n    \"apellido\": \"Griffa Benitez\",\r\n    \"email\": \"tgriffa@gmail.com\",\r\n    \"telefono\": \"11.1111.1111\",\r\n    \"direccion\": \"Calle 1, piso 2, dpt A\",\r\n    \"ciudad\": \"Bs As\",\r\n    \"pais\": \"Argentina\",\r\n    \"cargo\": \"Programador Java\",\r\n    \"salario\": \"1000000000\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:443/api/v1/empleados/16",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "443",
+					"path": [
+						"api",
+						"v1",
+						"empleados",
+						"16"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[admin] eliminar empleado",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "{{Bearer}}",
+						"type": "text"
+					},
+					{
+						"key": "Role",
+						"value": "{{Role}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:443/api/v1/empleados/1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "443",
+					"path": [
+						"api",
+						"v1",
+						"empleados",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[admin] obtener usuarios",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "{{Bearer}}",
+						"type": "text"
+					},
+					{
+						"key": "Role",
+						"value": "{{Role}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:443/api/v1/usuarios",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "443",
+					"path": [
+						"api",
+						"v1",
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[admin] obtener un usuario",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "{{Bearer}}",
+						"type": "text"
+					},
+					{
+						"key": "Role",
+						"value": "{{Role}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:443/api/v1/usuarios/1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "443",
+					"path": [
+						"api",
+						"v1",
+						"usuarios",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{Bearer}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
