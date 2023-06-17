@@ -29,29 +29,4 @@ public interface BaseController<E extends Base, ID extends Serializable> {
      * @return Una ResponseEntity con el elemento encontrado, o un mensaje de error si no se encuentra ninguno.
      */
     ResponseEntity<?> getById(@PathVariable ID id);
-
-    /**
-     * Guarda un elemento de la entidad.
-     *
-     * @param entity El elemento a guardar.
-     * @return Una ResponseEntity con el elemento guardado, o un mensaje de error si ocurre un problema.
-     */
-    ResponseEntity<?> save(@RequestBody E entity);
-
-    /**
-     * Actualiza un elemento de la entidad por su ID.
-     *
-     * @param id     El ID del elemento a actualizar.
-     * @param entity El nuevo estado del elemento.
-     * @return Una ResponseEntity con el elemento actualizado, o un mensaje de error si ocurre un problema.
-     */
-    ResponseEntity<?> update(@PathVariable ID id, @RequestBody E entity);
-
-    /**
-     * Elimina un elemento de la entidad por su ID.
-     *
-     * @param id El ID del elemento a eliminar.
-     * @return Una ResponseEntity con el resultado de la eliminación, o un mensaje de error si ocurre un problema.
-     */
-    ResponseEntity<?> delete(@PathVariable ID id);
 }
