@@ -3,15 +3,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.sistemasactivos.msusuario.model.UsuarioLogin;
 import com.sistemasactivos.msusuario.service.UserDetailsImpl;
+import com.sistemasactivos.msusuario.utils.ErrorResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -34,7 +36,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             // Leer y mapear el cuerpo de la solicitud a la clase UsuarioLogin
             usuarioLogin = new ObjectMapper().readValue(request.getReader(), UsuarioLogin.class);
         } catch (IOException e) {
-            throw new AuthenticationCredentialsNotFoundException("Error al obtener las credenciales de autenticación, error: " + e.getMessage() + ", causa: " + e.getCause());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al obtener las credenciales de autenticación.", e);
         }
 
         // Crear una instancia de UsernamePasswordAuthenticationToken con las credenciales del usuario
@@ -66,7 +68,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // Agregar el token JWT y el rol del usuario como encabezados de la respuesta
         response.addHeader("Authorization", "Bearer " + token);
-        response.addHeader("Role", " " + userDetails.getAuthorities());
+        response.addHeader("Role", userDetails.getAuthorities().toString());
 
         // Vaciar el buffer de salida de la respuesta
         response.getWriter().flush();
@@ -86,10 +88,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      */
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        // Establecer el código de estado de la respuesta en 401 (Unauthorized)
+        ErrorResponse errorResponse = new ErrorResponse(HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
-        // Escribir el mensaje de error en el cuerpo de la respuesta
-        response.getWriter().write("Authentication failed");
+        response.setContentType("application/json");
+        response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
     }
 }
