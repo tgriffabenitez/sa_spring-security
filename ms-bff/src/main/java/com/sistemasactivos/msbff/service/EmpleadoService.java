@@ -1,6 +1,6 @@
 package com.sistemasactivos.msbff.service;
 
-import com.sistemasactivos.msbff.model.Empleado;
+import com.sistemasactivos.msbff.dto.EmpleadoDTO;
 import com.sistemasactivos.msbff.utils.StatusCodeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,11 +23,11 @@ public class EmpleadoService implements IEmpleadoService {
      *
      * @return Un flujo de empleados.
      */
-    public Flux<Empleado> findAll() {
+    public Flux<EmpleadoDTO> findAll() {
         return webClient.get()
                 .uri("/empleados")
                 .retrieve()
-                .bodyToFlux(Empleado.class);
+                .bodyToFlux(EmpleadoDTO.class);
     }
 
     /**
@@ -36,11 +36,11 @@ public class EmpleadoService implements IEmpleadoService {
      * @param id El id del empleado.
      * @return Un empleado.
      */
-    public Mono<Empleado> findById(Long id) {
+    public Mono<EmpleadoDTO> findById(Long id) {
         return webClient.get()
                 .uri("/empleados/" + id)
                 .retrieve()
-                .bodyToMono(Empleado.class);
+                .bodyToMono(EmpleadoDTO.class);
     }
 
     /**
@@ -49,11 +49,11 @@ public class EmpleadoService implements IEmpleadoService {
      * @param persona El empleado a guardar.
      * @return El empleado guardado.
      */
-    public Mono<Empleado> save(Empleado persona) {
+    public Mono<EmpleadoDTO> save(EmpleadoDTO persona) {
         return webClient.post()
                 .uri("/empleados")
                 .bodyValue(persona)
-                .exchangeToMono(clientResponse -> StatusCodeHandler.clientResponse(clientResponse, Empleado.class));
+                .exchangeToMono(clientResponse -> StatusCodeHandler.clientResponse(clientResponse, EmpleadoDTO.class));
     }
 
     /**
@@ -75,10 +75,10 @@ public class EmpleadoService implements IEmpleadoService {
      * @param persona El empleado con los datos actualizados.
      * @return El empleado actualizado.
      */
-    public Mono<Empleado> update(Long id, Empleado persona) {
+    public Mono<EmpleadoDTO> update(Long id, EmpleadoDTO persona) {
         return webClient.put()
                 .uri("/empleados/" + id)
                 .bodyValue(persona)
-                .exchangeToMono(clientResponse -> StatusCodeHandler.clientResponse(clientResponse, Empleado.class));
+                .exchangeToMono(clientResponse -> StatusCodeHandler.clientResponse(clientResponse, EmpleadoDTO.class));
     }
 }
