@@ -7,6 +7,11 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
 
+
+/**
+ * Clase que representa un objeto Usuario con sus atributos correspondientes.
+ * Implementa la interfaz Serializable para permitir su serialización.
+ */
 @Getter
 @Setter
 public class UsuarioDTO implements Serializable {

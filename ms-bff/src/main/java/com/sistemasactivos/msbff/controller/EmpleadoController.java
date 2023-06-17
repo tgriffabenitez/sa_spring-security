@@ -1,6 +1,6 @@
 package com.sistemasactivos.msbff.controller;
 
-import com.sistemasactivos.msbff.dto.EmpleadoDTO;
+import com.sistemasactivos.msbff.model.Empleado;
 import com.sistemasactivos.msbff.service.EmpleadoService;
 import com.sistemasactivos.msbff.utils.CacheUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,17 +63,17 @@ public class EmpleadoController {
     }
 
     /**
-     * Crea un nuevo empleadoDTO.
+     * Crea un nuevo empleado.
      *
-     * @param empleadoDTO El objeto EmpleadoDTO que contiene los datos del empleadoDTO a crear.
+     * @param empleado El objeto Empleado que contiene los datos del empleado a crear.
      * @param request  La solicitud HTTP entrante.
-     * @return ResponseEntity con el empleadoDTO creado o un mensaje de error y código de estado correspondiente.
+     * @return ResponseEntity con el empleado creado o un mensaje de error y código de estado correspondiente.
      */
     @PostMapping("")
-    public ResponseEntity<?> save(@RequestBody EmpleadoDTO empleadoDTO, ServerHttpRequest request) {
+    public ResponseEntity<?> save(@RequestBody Empleado empleado, ServerHttpRequest request) {
         try {
             if (cacheUtils.isAdmin(request)) {
-                return new ResponseEntity<>(empleadoService.save(empleadoDTO), HttpStatus.CREATED);
+                return new ResponseEntity<>(empleadoService.save(empleado), HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("No tiene permisos para acceder a este endpoint", HttpStatus.UNAUTHORIZED);
             }
@@ -83,18 +83,18 @@ public class EmpleadoController {
     }
 
     /**
-     * Actualiza un empleadoDTO existente.
+     * Actualiza un empleado existente.
      *
-     * @param id       El ID del empleadoDTO a actualizar.
-     * @param empleadoDTO El objeto EmpleadoDTO que contiene los datos actualizados del empleadoDTO.
+     * @param id       El ID del empleado a actualizar.
+     * @param empleado El objeto Empleado que contiene los datos actualizados del empleado.
      * @param request  La solicitud HTTP entrante.
-     * @return ResponseEntity con el empleadoDTO actualizado o un mensaje de error y código de estado correspondiente.
+     * @return ResponseEntity con el empleado actualizado o un mensaje de error y código de estado correspondiente.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody EmpleadoDTO empleadoDTO, ServerHttpRequest request) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Empleado empleado, ServerHttpRequest request) {
         try {
             if (cacheUtils.isAdmin(request)) {
-                return new ResponseEntity<>(empleadoService.update(id, empleadoDTO), HttpStatus.OK);
+                return new ResponseEntity<>(empleadoService.update(id, empleado), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("No tiene permisos para acceder a este endpoint", HttpStatus.UNAUTHORIZED);
             }

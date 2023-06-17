@@ -8,6 +8,11 @@ import lombok.Setter;
 import java.io.Serial;
 import java.io.Serializable;
 
+
+/**
+ * Clase que representa un objeto Rol con sus atributos correspondientes.
+ * Implementa la interfaz Serializable para permitir su serialización.
+ */
 @Getter
 @Setter
 @AllArgsConstructor
