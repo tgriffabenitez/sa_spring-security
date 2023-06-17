@@ -12,6 +12,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Implementación de UserDetails para la autenticación y autorización de usuarios.
+ */
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
@@ -33,35 +36,71 @@ public class UserDetailsImpl implements UserDetails {
         return authorities;
     }
 
+    /**
+     * Obtiene la contraseña del usuario.
+     *
+     * @return La contraseña del usuario.
+     */
     @Override
     public String getPassword() {
         return usuario.getPassword();
     }
 
+    /**
+     * Obtiene el nombre de usuario del usuario.
+     *
+     * @return El nombre de usuario del usuario.
+     */
     @Override
     public String getUsername() {
         return usuario.getEmail();
     }
 
+    /**
+     * Obtiene el nombre del usuario.
+     *
+     * @return El nombre del usuario.
+     */
     public String getName() {
         return usuario.getNombre();
     }
 
+    /**
+     * Indica si la cuenta del usuario ha expirado.
+     *
+     * @return true si la cuenta no ha expirado, false de lo contrario.
+     */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    /**
+     * Indica si la cuenta del usuario está bloqueada.
+     *
+     * @return true si la cuenta no está bloqueada, false de lo contrario.
+     */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+
+    /**
+     * Indica si las credenciales del usuario han expirado.
+     *
+     * @return true si las credenciales no han expirado, false de lo contrario.
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    /**
+     * Indica si el usuario está habilitado.
+     *
+     * @return true si el usuario está habilitado, false de lo contrario.
+     */
     @Override
     public boolean isEnabled() {
         return true;

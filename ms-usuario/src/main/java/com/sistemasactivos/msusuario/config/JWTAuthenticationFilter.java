@@ -18,6 +18,10 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.Collections;
 
+/**
+ * Filtro de autenticación JWT que extiende la clase UsernamePasswordAuthenticationFilter.
+ * Este filtro se utiliza para autenticar a los usuarios utilizando JSON Web Tokens (JWT).
+ */
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     /**

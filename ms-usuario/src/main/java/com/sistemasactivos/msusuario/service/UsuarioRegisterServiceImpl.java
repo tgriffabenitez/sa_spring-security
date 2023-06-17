@@ -12,6 +12,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementación del servicio de registro de usuarios.
+ */
 @Service
 public class UsuarioRegisterServiceImpl implements UsuarioRegisterService {
 
