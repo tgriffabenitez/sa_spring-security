@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Clase que representa a un empleado.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

@@ -8,6 +8,12 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación base para los servicios.
+ *
+ * @param <E>  El tipo de entidad manejada por el servicio.
+ * @param <ID> El tipo de identificador de la entidad.
+ */
 public class BaseServiceImpl <E extends Base, ID extends Serializable> implements BaseService<E, ID> {
 
     protected BaseRepository<E, ID> baseRepository;

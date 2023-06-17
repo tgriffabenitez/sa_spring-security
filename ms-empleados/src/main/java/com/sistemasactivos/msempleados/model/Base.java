@@ -9,6 +9,9 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
+/**
+ * Clase base abstracta que proporciona una propiedad de identificador para las entidades.
+ */
 @Getter
 @Setter
 @MappedSuperclass
