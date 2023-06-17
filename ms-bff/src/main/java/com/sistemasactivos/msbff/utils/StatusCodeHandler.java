@@ -22,6 +22,17 @@ import reactor.core.publisher.Mono;
  */
 public class StatusCodeHandler {
 
+    /**
+     * Maneja la respuesta del cliente y devuelve un Mono que contiene el objeto deseado si la respuesta es exitosa.
+     * En caso de errores, se lanza una excepción ResponseStatusException.
+     *
+     * @param clientResponse La respuesta del cliente obtenida al realizar una solicitud HTTP.
+     * @param clazz          La clase del objeto deseado.
+     * @param <T>            El tipo de objeto deseado.
+     * @return Un Mono que contiene el objeto deseado si la respuesta es exitosa.
+     * @throws ResponseStatusException Si ocurre un error en la respuesta del cliente.
+     * @throws RuntimeException       Si ocurre un error desconocido.
+     */
     public static <T> Mono<T> clientResponse(ClientResponse clientResponse, Class<T> clazz) {
         HttpStatusCode statusCode = clientResponse.statusCode();
         if (statusCode.is2xxSuccessful()) {

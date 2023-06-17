@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+/**
+ * Servicio para operaciones relacionadas con el registro de nuevos usuarios.
+ */
 @Service
 public class RegisterService implements IRegisterService {
 

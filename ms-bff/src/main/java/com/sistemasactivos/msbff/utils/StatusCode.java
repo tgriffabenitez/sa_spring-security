@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+/**
+ * Enumeración de códigos de estado utilizados para manejar errores y respuestas exitosas en la aplicación.
+ */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

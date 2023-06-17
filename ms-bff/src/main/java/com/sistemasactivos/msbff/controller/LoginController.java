@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 
+/**
+ * Controlador para manejar las operaciones relacionadas con el login.
+ */
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/login")

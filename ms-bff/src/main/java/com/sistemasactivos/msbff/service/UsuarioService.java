@@ -13,6 +13,9 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 
+/**
+ * Servicio para operaciones relacionadas con usuarios.
+ */
 @Service
 public class UsuarioService {
     @Autowired

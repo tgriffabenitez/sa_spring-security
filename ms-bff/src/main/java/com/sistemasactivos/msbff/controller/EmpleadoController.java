@@ -10,6 +10,9 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.*;
 
 
+/**
+ * Controlador para manejar las operaciones relacionadas con los empleados.
+ */
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/empleados")
