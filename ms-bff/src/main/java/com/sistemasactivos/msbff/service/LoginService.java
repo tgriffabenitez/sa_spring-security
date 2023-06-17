@@ -81,7 +81,7 @@ public class LoginService implements ILoginService {
         }
 
         // Agrego el token al header del response
-        response.getHeaders().add("Bearer", "Bearer " + token);
+        response.getHeaders().add("Bearer", token);
         response.getHeaders().add("Role", userRol.get(0));
 
         // Almaceno el token y el rol en la cache
