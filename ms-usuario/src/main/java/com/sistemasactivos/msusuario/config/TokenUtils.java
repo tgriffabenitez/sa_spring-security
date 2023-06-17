@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.*;
@@ -54,26 +55,32 @@ public class TokenUtils {
      * @param token El token de acceso.
      * @return La autenticación obtenida a partir del token, o null si el token es inválido.
      */
-    public static UsernamePasswordAuthenticationToken getAutentication(String token) {
+    public static UsernamePasswordAuthenticationToken getAutentication(String token) throws Exception {
         String email;
 
         try {
             Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(ACCESS_TOKEN_SECRET.getBytes()) // Configura la clave secreta para validar la firma del token
+                    .setSigningKey(ACCESS_TOKEN_SECRET.getBytes())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
 
-            // Obtiene el correo electrónico del sujeto del token
             email = claims.getSubject();
 
+            // Obtiene los roles del claim "roles" en el mapa de claims extras
+            List<String> roles = (List<String>) claims.get("roles");
+
+            // Crea una lista de GrantedAuthority a partir de los roles
+            List<GrantedAuthority> authorities = roles.stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
+
             // Devuelve una instancia de UsernamePasswordAuthenticationToken con el correo electrónico como principal
-            // y una lista vacía de credenciales y autoridades
-            return new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
+            // y la lista de autoridades correspondiente a los roles
+            return new UsernamePasswordAuthenticationToken(email, null, authorities);
 
         } catch (JwtException e) {
-            // Si ocurre una excepción JwtException, se devuelve null para indicar que el token es inválido
-            return null;
+            throw new Exception("Token inválido", e.getCause());
         }
     }
 }
