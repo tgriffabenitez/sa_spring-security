@@ -10,6 +10,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -57,5 +58,20 @@ public class UsuarioService {
                     usuarioDTO.setRoles(usuario.getRoles());
                     return usuarioDTO;
                 });
+    }
+
+    public Mono<UsuarioDTO> findById(Long id, ServerHttpRequest request) {
+        // Obtener el token y el rol del usuario del header
+        HttpHeaders requestHeaders = request.getHeaders();
+        String token = tokenUtils.getTokenFromHeaders(requestHeaders);
+        List<String> roles = cacheUtils.getValueFromCache(token);
+
+        // Incluir el ID en la URL de la solicitud GET
+        return webClient.get()
+                .uri("/api/v1/usuarios/{id}", id) // Reemplazar {id} con el valor del ID
+                .header("Authorization", "Bearer " + token)
+                .headers(headers -> headers.addAll("Role", roles))
+                .retrieve()
+                .bodyToMono(UsuarioDTO.class);
     }
 }
