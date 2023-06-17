@@ -1,19 +1,13 @@
 package com.sistemasactivos.msbff.service;
 
 import com.sistemasactivos.msbff.model.Empleado;
-import com.sistemasactivos.msbff.utils.CacheUtils;
 import com.sistemasactivos.msbff.utils.StatusCodeHandler;
-import com.sistemasactivos.msbff.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 /**
  * Servicio para el manejo de empleados.
@@ -23,12 +17,6 @@ public class EmpleadoService implements IEmpleadoService {
     @Autowired
     @Qualifier("empleadosWebClient")
     private WebClient webClient;
-
-    @Autowired
-    private TokenUtils tokenUtils;
-
-    @Autowired
-    private CacheUtils cacheUtils;
 
     /**
      * Obtiene todos los empleados.
@@ -92,31 +80,5 @@ public class EmpleadoService implements IEmpleadoService {
                 .uri("/empleados/" + id)
                 .bodyValue(persona)
                 .exchangeToMono(clientResponse -> StatusCodeHandler.clientResponse(clientResponse, Empleado.class));
-    }
-
-    /**
-     * Busco en la cache si el token del request existe y si el rol es de admin.
-     *
-     * @param request La solicitud HTTP del cliente que contiene el token de acceso.
-     * @return `true` si el usuario tiene el rol de administrador, de lo contrario `false`.
-     */
-    public boolean isAdmin(ServerHttpRequest request) {
-        HttpHeaders headers = request.getHeaders();
-        String token = tokenUtils.getTokenFromHeaders(headers);
-        List<String> roles = cacheUtils.getValueFromCache(token);
-        return roles != null && roles.contains("admin");
-    }
-
-    /**
-     * Busco en la cache si el token del request existe y si el rol es de usuario.
-     *
-     * @param request La solicitud HTTP del cliente que contiene el token de acceso.
-     * @return `true` si el usuario tiene el rol de usuario, de lo contrario `false`.
-     */
-    public boolean isUsuario(ServerHttpRequest request) {
-        HttpHeaders headers = request.getHeaders();
-        String token = tokenUtils.getTokenFromHeaders(headers);
-        List<String> roles = cacheUtils.getValueFromCache(token);
-        return roles != null && roles.contains("usuario");
     }
 }

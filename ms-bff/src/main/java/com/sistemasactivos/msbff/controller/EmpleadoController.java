@@ -2,6 +2,7 @@ package com.sistemasactivos.msbff.controller;
 
 import com.sistemasactivos.msbff.model.Empleado;
 import com.sistemasactivos.msbff.service.EmpleadoService;
+import com.sistemasactivos.msbff.utils.CacheUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ public class EmpleadoController {
 
     @Autowired
     private EmpleadoService empleadoService;
+    @Autowired
+    private CacheUtils cacheUtils;
 
     /**
      * Obtiene todos los empleados.
@@ -26,7 +29,7 @@ public class EmpleadoController {
     @GetMapping("")
     public ResponseEntity<?> findAll(ServerHttpRequest request) {
         try {
-            if (empleadoService.isAdmin(request) || empleadoService.isUsuario(request)) {
+            if (cacheUtils.isAdmin(request) || cacheUtils.isUsuario(request)) {
                 return new ResponseEntity<>(empleadoService.findAll(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("No tiene permisos para acceder a este endpoint", HttpStatus.UNAUTHORIZED);
@@ -46,7 +49,7 @@ public class EmpleadoController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id, ServerHttpRequest request) {
         try {
-            if (empleadoService.isAdmin(request) || empleadoService.isUsuario(request)) {
+            if (cacheUtils.isAdmin(request) || cacheUtils.isUsuario(request)) {
                 return new ResponseEntity<>(empleadoService.findById(id), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("No tiene permisos para acceder a este endpoint", HttpStatus.UNAUTHORIZED);
@@ -66,7 +69,7 @@ public class EmpleadoController {
     @PostMapping("")
     public ResponseEntity<?> save(@RequestBody Empleado empleado, ServerHttpRequest request) {
         try {
-            if (empleadoService.isAdmin(request)) {
+            if (cacheUtils.isAdmin(request)) {
                 return new ResponseEntity<>(empleadoService.save(empleado), HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("No tiene permisos para acceder a este endpoint", HttpStatus.UNAUTHORIZED);
@@ -87,7 +90,7 @@ public class EmpleadoController {
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Empleado empleado, ServerHttpRequest request) {
         try {
-            if (empleadoService.isAdmin(request)) {
+            if (cacheUtils.isAdmin(request)) {
                 return new ResponseEntity<>(empleadoService.update(id, empleado), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("No tiene permisos para acceder a este endpoint", HttpStatus.UNAUTHORIZED);
@@ -107,7 +110,7 @@ public class EmpleadoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id, ServerHttpRequest request) {
         try {
-            if (empleadoService.isAdmin(request)) {
+            if (cacheUtils.isAdmin(request)) {
                 return new ResponseEntity<>(empleadoService.delete(id), HttpStatus.NO_CONTENT);
             } else {
                 return new ResponseEntity<>("No tiene permisos para acceder a este endpoint", HttpStatus.UNAUTHORIZED);

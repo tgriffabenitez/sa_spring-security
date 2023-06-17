@@ -2,6 +2,8 @@ package com.sistemasactivos.msbff.utils;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -55,5 +57,31 @@ public class CacheUtils {
      */
     public void putDataInCache(String key, Object value) {
         cache.put(key, value);
+    }
+
+    /**
+     * Busco en la cache si el token del request existe y si el rol es de admin.
+     *
+     * @param request La solicitud HTTP del cliente que contiene el token de acceso.
+     * @return `true` si el usuario tiene el rol de administrador, de lo contrario `false`.
+     */
+    public boolean isAdmin(ServerHttpRequest request) {
+        HttpHeaders headers = request.getHeaders();
+        String token = tokenUtils.getTokenFromHeaders(headers);
+        List<String> roles = getValueFromCache(token);
+        return roles != null && roles.contains("admin");
+    }
+
+    /**
+     * Busco en la cache si el token del request existe y si el rol es de usuario.
+     *
+     * @param request La solicitud HTTP del cliente que contiene el token de acceso.
+     * @return `true` si el usuario tiene el rol de usuario, de lo contrario `false`.
+     */
+    public boolean isUsuario(ServerHttpRequest request) {
+        HttpHeaders headers = request.getHeaders();
+        String token = tokenUtils.getTokenFromHeaders(headers);
+        List<String> roles = getValueFromCache(token);
+        return roles != null && roles.contains("usuario");
     }
 }
