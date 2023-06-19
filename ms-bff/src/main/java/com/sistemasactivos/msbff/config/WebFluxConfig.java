@@ -29,7 +29,7 @@ public class WebFluxConfig implements WebFluxConfigurer {
     @Bean
     @Qualifier("signInWebClient")
     public WebClient signInWebClient() {
-        String baseUrl = "https://localhost:444";
+        String baseUrl = "https://ms-usuario:444";
         return createWebClient(baseUrl);
     }
 
@@ -41,7 +41,7 @@ public class WebFluxConfig implements WebFluxConfigurer {
     @Bean
     @Qualifier("empleadosWebClient")
     public WebClient msempleadosWebClient() {
-        String baseUrl = "https://localhost:442/api/v1";
+        String baseUrl = "https://ms-empleados:442/api/v1";
         return createWebClient(baseUrl);
     }
 

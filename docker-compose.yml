@@ -1,0 +1,75 @@
+# version de docker-compose
+version: "3.9" 
+
+services:
+  mysql-usuario:
+    container_name: mysql-usuario
+    image: mysql:8
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_DATABASE: sa_usuarios
+    volumes:
+      - data-mysql-usuario:/var/lib/mysql
+    networks:
+      - spring
+    restart: always
+
+  mysql-empleados:
+    container_name: mysql-empleados
+    image: mysql:8    
+    ports:
+      - 3308:3306
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_DATABASE: sa_empleados
+    volumes:
+      - data-mysql-empleados:/var/lib/mysql
+    networks:
+      - spring
+    restart: always
+
+  ms-usuario:
+    container_name: ms-usuario
+    image: tgriffabenitez/sa_spring-security-usuarios
+    ports:
+      - 444:444
+    networks:
+      - spring
+    depends_on:
+      - mysql-usuario
+    restart: always
+
+  ms-bff:
+    container_name: ms-bff
+    image: tgriffabenitez/sa_spring-security-bff
+    ports:
+      - 443:443
+    networks:
+      - spring
+    depends_on:
+      - ms-usuario
+      - ms-empleados
+    restart: always
+
+  ms-empleados:
+    container_name: ms-empleados
+    image: tgriffabenitez/sa_spring-security-empleados
+    ports:
+      - 442:442
+    networks:
+      - spring
+    depends_on:
+      - mysql-empleados
+    restart: always
+    
+volumes:
+  data-mysql-usuario:
+    name: data-mysql-usuario
+  data-mysql-empleados:
+    name: data-mysql-empleados
+
+networks:
+  spring:
+    name: spring
